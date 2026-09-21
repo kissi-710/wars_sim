@@ -2,6 +2,7 @@
 import { onBeforeUnmount, onMounted } from 'vue'
 import ControlBar from './components/ControlBar.vue'
 import HelpDialog from './components/HelpDialog.vue'
+import Icon from './components/Icon.vue'
 import LogPanel from './components/LogPanel.vue'
 import MapArea from './components/MapArea.vue'
 import NewGameDialog from './components/NewGameDialog.vue'
@@ -143,13 +144,13 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
           <div class="split-h" title="ドラッグで高さを変更" @pointerdown="dragSplit($event, 'y')" />
           <div class="log-wrap" :style="{ height: ui.logHeight + 'px' }"><LogPanel /></div>
         </template>
-        <button v-else class="dock-btn bottom" @click="ui.logOpen = true">▲ ログを開く(L)</button>
+        <button v-else class="dock-btn bottom" @click="ui.logOpen = true"><Icon name="chevronUp" :size="14" />ログを開く(L)</button>
       </div>
       <template v-if="ui.sidebarOpen">
         <div class="split-v" title="ドラッグで幅を変更" @pointerdown="dragSplit($event, 'x')" />
         <div class="side-wrap" :style="{ width: ui.sidebarWidth + 'px' }"><SideBar /></div>
       </template>
-      <button v-else class="dock-btn side" @click="ui.sidebarOpen = true">◀</button>
+      <button v-else class="dock-btn side" title="サイドバーを開く" @click="ui.sidebarOpen = true"><Icon name="chevronLeft" :size="14" /></button>
     </div>
     <ToastHost />
     <NewGameDialog />

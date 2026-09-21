@@ -98,6 +98,7 @@ function jumpToVillage(id: number): void {
         :key="r.id"
         class="card"
         :class="{ selected: ui.selectedCountry === r.id, dead: !r.alive }"
+        :style="{ '--c': r.color }"
         @mouseenter="enter(r.id)"
         @mouseleave="leave"
         @click="select(r.id)"
@@ -114,12 +115,19 @@ function jumpToVillage(id: number): void {
           <button class="btn tiny" title="この国の村へ移動" @click.stop="jumpToVillage(r.id)">村へ</button>
         </div>
         <div class="card-grid">
-          <span>領土 <b>{{ fmt(r.land) }}</b></span>
-          <span>民間人 <b>{{ fmt(r.civilians) }}</b></span>
-          <span>軍人 <b>{{ fmt(r.soldiers) }}</b> <small class="dim">({{ Math.round(r.ratio * 100) }}%/{{ Math.round(r.target * 100) }}%)</small></span>
-          <span>食料 <b>{{ fmt(r.food) }}</b></span>
-          <span>鉱物 <b>{{ fmt(r.ore) }}</b></span>
-          <span>装備 <b>{{ fmt(r.equipment) }}</b></span>
+          <div class="stat"><small>領土</small><b>{{ fmt(r.land) }}</b></div>
+          <div class="stat"><small>民間人</small><b>{{ fmt(r.civilians) }}</b></div>
+          <div class="stat">
+            <small>軍人</small>
+            <b>{{ fmt(r.soldiers) }} <em>{{ Math.round(r.ratio * 100) }}% / 目標{{ Math.round(r.target * 100) }}%</em></b>
+          </div>
+          <div class="stat"><small>食料</small><b>{{ fmt(r.food) }}</b></div>
+          <div class="stat"><small>鉱物</small><b>{{ fmt(r.ore) }}</b></div>
+          <div class="stat"><small>装備</small><b>{{ fmt(r.equipment) }}</b></div>
+        </div>
+        <div class="popbar" :title="`民間人 ${r.civilians} / 軍人 ${r.soldiers}`">
+          <i :style="{ width: (1 - r.ratio) * 100 + '%' }" />
+          <i :style="{ width: r.ratio * 100 + '%' }" />
         </div>
       </div>
     </div>

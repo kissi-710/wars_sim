@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { cameraCommands, ui } from '../store'
+import Icon from './Icon.vue'
 import type { HeatMode, Layers } from '../render/mapRenderer'
 
 const menuOpen = ref(false)
@@ -30,11 +31,16 @@ function toggle(key: keyof Layers): void {
 
 <template>
   <div class="map-toolbar">
-    <button class="btn icon" title="ズームイン(+)" @click="cameraCommands.push('zoomIn')">＋</button>
-    <button class="btn icon" title="ズームアウト(-)" @click="cameraCommands.push('zoomOut')">－</button>
-    <button class="btn" title="全体表示(0 / Home)" @click="cameraCommands.push('fit')">全体</button>
+    <div class="btn-group">
+      <button class="btn icon" title="ズームイン(+)" @click="cameraCommands.push('zoomIn')"><Icon name="zoomIn" :size="16" /></button>
+      <button class="btn icon" title="ズームアウト(-)" @click="cameraCommands.push('zoomOut')"><Icon name="zoomOut" :size="16" /></button>
+    </div>
+    <button class="btn" title="全体表示(0 / Home)" @click="cameraCommands.push('fit')"><Icon name="fit" :size="15" />全体</button>
+    <span class="sep" />
     <div class="menu-wrap">
-      <button class="btn" :class="{ active: menuOpen }" @click="menuOpen = !menuOpen">レイヤー ▾</button>
+      <button class="btn" :class="{ active: menuOpen }" @click="menuOpen = !menuOpen">
+        <Icon name="layers" :size="15" />レイヤー<Icon name="chevronDown" :size="13" />
+      </button>
       <div v-if="menuOpen" class="menu" @mouseleave="menuOpen = false">
         <label v-for="it in LAYER_ITEMS" :key="it.key" class="menu-item">
           <input type="checkbox" :checked="ui.layers[it.key] as boolean" @change="toggle(it.key)" />
@@ -58,7 +64,7 @@ function toggle(key: keyof Layers): void {
       title="追従を解除"
       @click="ui.followUnitId = -1"
     >
-      追従中 ✕
+      <Icon name="crosshair" :size="14" />追従中<Icon name="close" :size="12" />
     </button>
     <label class="auto-cam" title="戦闘・占領・滅亡などの見どころへ自動でカメラを移動する">
       <input type="checkbox" v-model="ui.autoCamera" /> オートカメラ

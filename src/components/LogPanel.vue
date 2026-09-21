@@ -3,6 +3,7 @@ import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import type { Importance, SimEvent } from '../core/types'
 import { addPing, focusCell, logFocusId, panelVersion, sim, ui, worldId } from '../store'
 import { EVENT_CATEGORIES, EVENT_TYPE_LABEL, categoryOf, formatEvent } from '../ui/format'
+import Icon from './Icon.vue'
 
 const ROW = 24
 const scroller = ref<HTMLDivElement>()
@@ -120,7 +121,7 @@ function color(ev: SimEvent, k: number): string {
 <template>
   <section class="logpanel">
     <div class="log-head">
-      <strong>ログ</strong>
+      <strong><Icon name="list" :size="15" />ログ</strong>
       <div class="btn-group">
         <button class="btn tiny" :class="{ active: importance === 'major' }" @click="importance = 'major'">重大のみ</button>
         <button class="btn tiny" :class="{ active: importance === 'normal' }" @click="importance = 'normal'">通常以上</button>
@@ -153,7 +154,7 @@ function color(ev: SimEvent, k: number): string {
       <span class="spacer" />
       <label class="dim"><input v-model="follow" type="checkbox" @change="follow && toBottom()" /> 自動追尾</label>
       <small class="dim mono">{{ rows.length }}件</small>
-      <button class="btn tiny" title="ログを閉じる(L)" @click="ui.logOpen = false">▼</button>
+      <button class="btn tiny icon" title="ログを閉じる(L)" @click="ui.logOpen = false"><Icon name="chevronDown" :size="14" /></button>
     </div>
     <div ref="scroller" class="log-scroll" @scroll="onScroll">
       <div class="log-spacer" :style="{ height: rows.length * ROW + 'px' }">
@@ -170,7 +171,7 @@ function color(ev: SimEvent, k: number): string {
             <i class="dot" :style="{ background: color(r.ev, 0) }" />
             <i v-if="r.ev.countries.length > 1" class="dot" :style="{ background: color(r.ev, 1) }" />
           </span>
-          <span class="tag small">{{ EVENT_TYPE_LABEL[r.ev.type] }}</span>
+          <span class="tag small" :class="'cat-' + categoryOf(r.ev.type)">{{ EVENT_TYPE_LABEL[r.ev.type] }}</span>
           <span class="text">{{ r.text }}</span>
           <span v-if="r.ev.pos" class="mono dim pos">({{ r.ev.pos.x }},{{ r.ev.pos.y }})</span>
         </div>

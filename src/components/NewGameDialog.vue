@@ -3,6 +3,7 @@ import { reactive, watch } from 'vue'
 import { CONFIG } from '../core/config'
 import type { PersonalityId } from '../core/types'
 import { newGame, restartSameSeed, state, ui } from '../store'
+import Icon from './Icon.vue'
 
 type Choice = PersonalityId | 'random'
 
@@ -57,7 +58,7 @@ const OPTIONS: { id: Choice; label: string }[] = [
         <span>シード</span>
         <span class="inline">
           <input v-model="form.seedText" class="input mono" type="text" placeholder="空欄ならランダム" />
-          <button class="btn" @click="randomSeed">🎲</button>
+          <button class="btn icon" title="ランダムなシード" @click="randomSeed"><Icon name="dice" :size="16" /></button>
         </span>
       </label>
       <p class="hint dim">同じシード・国数・性格なら、同じ展開になります。</p>
