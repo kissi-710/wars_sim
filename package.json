@@ -1,0 +1,31 @@
+{
+  "name": "wars_sim",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "100x100 の世界で国々が勝手に発展し戦争するのを眺めるシミュレーションゲーム",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "vue-tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "balance": "tsx scripts/balance.ts",
+    "sim": "tsx scripts/run.ts",
+    "inspect": "tsx scripts/inspect.ts"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "vue": "^3.5.43"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.2",
+    "@vitejs/plugin-vue": "^6.0.9",
+    "tsx": "^4.23.15",
+    "typescript": "5.9",
+    "vite": "^8.3.0",
+    "vitest": "^5.0.1",
+    "vue-tsc": "^3.3.11"
+  }
+}
