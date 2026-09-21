@@ -443,7 +443,9 @@ describe('軍人化と総動員', () => {
     updateMobilization(w)
     const soldiers = [...w.units.values()].filter((u) => u.kind === 'soldier')
     expect(soldiers.length).toBeGreaterThan(0)
-    expect(soldiers.every((u) => u.atk === CONFIG.levels[2]!.equipAtk)).toBe(true)
+    // 装備の攻撃力 = 文明レベルの攻撃力 × 性格の補正(好戦的)
+    const expected = CONFIG.levels[2]!.equipAtk * CONFIG.personalities.warlike.attackMul
+    expect(soldiers.every((u) => u.atk === expected)).toBe(true)
   })
 })
 

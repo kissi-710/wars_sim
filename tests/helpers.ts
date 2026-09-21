@@ -11,6 +11,8 @@ export function emptyWorld(countryCount = 2, seed = 1): World {
   w.buildingAt.fill(NO_BUILDING)
   w.owner.fill(NO_OWNER)
   for (const c of w.countries) {
+    // 性格の補正(攻撃力・生産効率)がテストの期待値に影響しないよう、補正のない「中庸」に揃える
+    c.personality = 'balanced'
     c.land = 0
     c.civilians = 0
     c.soldiers = 0

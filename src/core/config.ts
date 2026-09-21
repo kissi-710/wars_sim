@@ -146,7 +146,7 @@ export const CONFIG = {
       aggression: 0.9,
       weights: { house: 1, farm: 1, mine: 1.5, workshop: 2 },
       workshopCapMul: 1,
-      attackMul: 1,
+      attackMul: 1.3,
       economyMul: 1,
     },
     balanced: {
@@ -163,13 +163,13 @@ export const CONFIG = {
     peaceful: {
       label: '平和的',
       ratio: 0.08,
-      mobRatio: 0.25,
-      stockCap: 30,
+      mobRatio: 0.5,
+      stockCap: 80,
       aggression: 0.15,
       weights: { house: 1.5, farm: 1.5, mine: 1, workshop: 0.5 },
       workshopCapMul: 1,
-      attackMul: 1,
-      economyMul: 1,
+      attackMul: 1.2,
+      economyMul: 1.1,
     },
   } as Record<PersonalityId, PersonalityDef>,
 
