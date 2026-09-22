@@ -42,6 +42,8 @@ function borderLengths(world: World): Int32Array {
  *  - 攻撃目標: 国境が長く(近く)、自国より弱い国ほど有利。
  *  - 侵攻するか: 強さの比が、性格で決まるしきい値(好戦的ほど低い)以上のとき。軍人が少ないうちは侵攻しない。
  *  - 相手がごく弱ければ、村を直接狙う(首狩り)。
+ *  - **戦争疲れ**: 国境を接した相手がいるのに、しきい値未達でずっと開戦を見送っていると、
+ *    しきい値が徐々に下がる(spec §15.2 の「互角の相手同士が動かなくなる」対策)。開戦すると 0 に戻る。
  */
 export function updateStrategy(world: World): void {
   const cfg = CONFIG.strategy
@@ -78,8 +80,13 @@ export function updateStrategy(world: World): void {
     }
 
     const threshold = cfg.thresholdBase - cfg.thresholdAggr * aggr
+    const eased = Math.max(cfg.thresholdFloor, threshold - c.standoffTurns * cfg.standoffDecay)
     const reachable = best >= 0 && ((border[c.id * n + best] as number) > 0 || aggr >= 0.5)
-    const attack = reachable && c.soldiers >= cfg.minSoldiers && bestRatio >= threshold
+    const attack = reachable && c.soldiers >= cfg.minSoldiers && bestRatio >= eased
+
+    // 「相手はいる・戦力も足りている・でもしきい値未達で見送った」ときだけ戦争疲れを積む
+    if (!attack && touching && best >= 0 && c.soldiers >= cfg.minSoldiers) c.standoffTurns++
+    else if (attack) c.standoffTurns = 0
 
     const prev = c.warTarget
     c.warTarget = attack ? best : -1

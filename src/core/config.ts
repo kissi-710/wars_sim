@@ -196,6 +196,13 @@ export const CONFIG = {
     minSoldiers: 5,
     thresholdBase: 1.6,
     thresholdAggr: 1.5,
+    /**
+     * 戦争疲れ(war weariness): 国境を接した相手がいるのに、しきい値未達で開戦を見送るたびにしきい値を下げる
+     * (1 回の見直しごとに standoffDecay ずつ)。互角の相手同士がいつまでも睨み合って動かなくなるのを防ぐ。
+     * しきい値は thresholdFloor までしか下がらない(それ以上は下げない)。開戦すると疲れはリセットされる。
+     */
+    standoffDecay: 0.01,
+    thresholdFloor: 0.5,
     /** 相手の強さが自国のこの割合以下なら、村を直接狙う(首狩り) */
     snipeRatio: 0.34,
     /** 装備の在庫 1 個を、軍人何体分の強さとみなすか */
@@ -207,6 +214,16 @@ export const CONFIG = {
     radius: 3,
     retreatFoes: 3,
     retreatRatio: 1.8,
+  },
+
+  /**
+   * 孤立崩壊: 建物を 1 つも持たない状態が長く続く国(生産手段が無く、経済を立て直せない)は、
+   * 全ユニットが少しずつ弱っていく。敵の手が届かない僻地に最後の 1 体が残り続けて
+   * 永遠に決着がつかない、という事態を防ぐための最終手段。猶予期間中は影響しない。
+   */
+  collapse: {
+    graceTurns: 150,
+    hpDecayPerTurn: 0.25,
   },
 
   stats: {

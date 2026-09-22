@@ -75,7 +75,46 @@ function chebyshev(ax: number, ay: number, bx: number, by: number): number {
   return Math.max(Math.abs(ax - bx), Math.abs(ay - by))
 }
 
-/** 建設場所: 自国領の空きマスから、周囲の民間人が多く既存建物の近くを選ぶ。通路を塞がない */
+const DIRS = [
+  [1, 0],
+  [-1, 0],
+  [0, 1],
+  [0, -1],
+] as const
+
+/**
+ * (x, y) に建物を建てると、その 4 近傍のどれか(所有国を問わない)を完全に建物(またはマップ外)で
+ * 囲んでしまわないか。囲むと、そのマスにいるユニットは誰にも攻撃されず、動くこともできず、
+ * 永遠に取り残されて決着がつかなくなる(§5.4 の反省点)。1 マスでも密閉するなら、その場所には建てない。
+ */
+export function wouldSeal(world: World, x: number, y: number): boolean {
+  const W = world.width
+  const H = world.height
+  for (const [dx, dy] of DIRS) {
+    const nx = x + dx
+    const ny = y + dy
+    if (nx < 0 || ny < 0 || nx >= W || ny >= H) continue
+    if (world.buildingAt[ny * W + nx] !== NO_BUILDING) continue // 既に建物ならそのマス自体は気にしない
+    let sealedSides = 0
+    for (const [ddx, ddy] of DIRS) {
+      const mx = nx + ddx
+      const my = ny + ddy
+      if (mx < 0 || my < 0 || mx >= W || my >= H) {
+        sealedSides++
+        continue
+      }
+      if (mx === x && my === y) {
+        sealedSides++ // これから建てようとしている建物
+        continue
+      }
+      if (world.buildingAt[my * W + mx] !== NO_BUILDING) sealedSides++
+    }
+    if (sealedSides >= 4) return true
+  }
+  return false
+}
+
+/** 建設場所: 自国領の空きマスから、周囲の民間人が多く既存建物の近くを選ぶ。通路を塞がない。隣接マスを密閉しない */
 function findSite(world: World, c: Country, kind: Buildable): number {
   const W = world.width
   const H = world.height
@@ -112,6 +151,7 @@ function findSite(world: World, c: Country, kind: Buildable): number {
       if (nx < 0 || ny < 0 || nx >= W || ny >= H || world.buildingAt[ny * W + nx] !== NO_BUILDING) blocked++
     }
     if (blocked >= 2) continue
+    if (wouldSeal(world, x, y)) continue
 
     let civilians = 0
     let adjBuildings = 0

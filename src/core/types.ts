@@ -92,11 +92,20 @@ export interface Country {
   civilians: number
   soldiers: number
   villages: number
+  /** 所有する建物の総数(種類を問わない)。0 が続くと孤立崩壊(collapse.ts)の対象になる */
+  buildingCount: number
+  /** 建物が 0 個の状態が続いているターン数。1 個でもあれば 0 に戻る */
+  noBuildingTurns: number
   /** 戦略: 攻撃目標の国(無ければ -1)と、現在の構え */
   warTarget: number
   posture: Posture
   /** 相手が弱く、村を直接狙う(首狩り)か */
   snipe: boolean
+  /**
+   * 「戦えたのに戦わなかった」戦略見直しの連続回数(国境を接した相手がいるのに、しきい値未達で開戦しなかった)。
+   * 増えるほど侵攻のしきい値が下がり(war weariness)、互角の膠着がいつまでも続くのを防ぐ。開戦すると 0 に戻る。
+   */
+  standoffTurns: number
   strategyAt: number
   counters: Counters
 }
@@ -115,6 +124,7 @@ export type EventType =
   | 'build'
   | 'starve'
   | 'convert'
+  | 'collapse'
   | 'extinct'
   | 'victory'
   | 'milestone'

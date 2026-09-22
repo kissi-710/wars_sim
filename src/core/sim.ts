@@ -3,6 +3,7 @@ import { refreshFields } from './fields'
 import { recordStats } from './stats'
 import { refreshPopulation } from './world'
 import { updateCivilization } from './systems/civilization'
+import { applyCollapse } from './systems/collapse'
 import { resolveCombat } from './systems/combat'
 import { construct } from './systems/construction'
 import { computeEfficiency } from './systems/efficiency'
@@ -36,7 +37,7 @@ function checkEnd(world: World): void {
 /**
  * 1 ターン進める。処理順は固定(docs/spec.md §9)。
  * 0 戦略 → 1 建設 → 2 効率 → 3 生産 → 4 維持費 → 5 総動員・軍人化 → 6 AI・7 移動 → 8 戦闘
- * → 9 領土 → 10 占領 → 11 文明レベル → 12 滅亡/勝利・統計
+ * → 9 領土 → 10 占領 → 11 文明レベル → 11.5 孤立崩壊 → 12 滅亡/勝利・統計
  */
 export function stepWorld(world: World): void {
   refreshPopulation(world)
@@ -67,6 +68,8 @@ export function stepWorld(world: World): void {
   for (const c of world.countries) if (c.land > c.peakLand) c.peakLand = c.land
   updateCivilization(world)
 
+  refreshPopulation(world)
+  applyCollapse(world)
   refreshPopulation(world)
   checkEnd(world)
 

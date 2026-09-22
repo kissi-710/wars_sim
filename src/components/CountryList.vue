@@ -21,6 +21,7 @@ const rows = computed(() => {
       level: c.level,
       mobilized: c.mobilized,
       starving: c.starving,
+      collapsing: c.buildingCount === 0 && c.noBuildingTurns >= CONFIG.collapse.graceTurns,
       land: c.land,
       civilians: c.civilians,
       soldiers: c.soldiers,
@@ -110,6 +111,7 @@ function jumpToVillage(id: number): void {
           <span class="tag lv">{{ levelName(r.level) }}</span>
           <span v-if="r.mobilized" class="tag alert">総動員</span>
           <span v-if="r.starving" class="tag alert">飢餓</span>
+          <span v-if="r.collapsing" class="tag alert" title="建物を全て失い、孤立して弱り続けている">孤立崩壊中</span>
           <span v-if="!r.alive" class="tag dead">滅亡</span>
           <span class="spacer" />
           <button class="btn tiny" title="この国の村へ移動" @click.stop="jumpToVillage(r.id)">村へ</button>

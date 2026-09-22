@@ -267,6 +267,7 @@ export function refreshPopulation(world: World): void {
     c.civilians = 0
     c.soldiers = 0
     c.villages = 0
+    c.buildingCount = 0
   }
   for (const u of world.units.values()) {
     const c = world.countries[u.owner]!
@@ -274,7 +275,9 @@ export function refreshPopulation(world: World): void {
     else c.civilians++
   }
   for (const b of world.buildings.values()) {
-    if (b.kind === 'village') world.countries[b.owner]!.villages++
+    const c = world.countries[b.owner]!
+    if (b.kind === 'village') c.villages++
+    c.buildingCount++
   }
 }
 
@@ -383,9 +386,12 @@ export function createWorld(options: GameOptions): World {
       civilians: 0,
       soldiers: 0,
       villages: 0,
+      buildingCount: 0,
+      noBuildingTurns: 0,
       warTarget: -1,
       posture: 'peace',
       snipe: false,
+      standoffTurns: 0,
       strategyAt: -999,
       counters: { kills: 0, civilianDeaths: 0, soldierDeaths: 0, occupied: 0, lost: 0, starved: 0 },
     })

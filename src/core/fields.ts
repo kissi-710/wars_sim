@@ -97,7 +97,12 @@ function computeExpand(world: World, c: number, f: CountryFields): void {
   })
 }
 
-/** 攻撃目標: 戦略で選んだ国(warTarget)の建物の占領判定範囲。首狩りなら村だけ。 */
+/**
+ * 攻撃目標: 戦略で選んだ国(warTarget)の建物の占領判定範囲。首狩りなら村だけ。
+ * 相手が建物を全て失っている(村も無い残党狩りの状態)場合は、占領する建物が無いので、
+ * 相手の残存領土(それも無ければ、相手ユニットの位置)を直接の目標にする。
+ * これが無いと、建物を失った最後の 1〜数体が誰にも狙われず永遠に生き残り、決着がつかなくなる。
+ */
 function computeAttack(world: World, country: Country, f: CountryFields): void {
   const W = world.width
   const H = world.height
@@ -121,6 +126,18 @@ function computeAttack(world: World, country: Country, f: CountryFields): void {
           const j = y * W + x
           if (world.buildingAt[j] === NO_BUILDING && world.owner[j] !== c) sources.push(j)
         }
+      }
+    }
+    if (sources.length === 0) {
+      // 残党狩り: 相手の残存領土を直接の目標にする
+      for (let i = 0; i < W * H; i++) {
+        if (world.owner[i] === target && world.buildingAt[i] === NO_BUILDING) sources.push(i)
+      }
+    }
+    if (sources.length === 0) {
+      // 領土すら残っていない: 相手ユニットの現在地を直接の目標にする
+      for (const u of world.units.values()) {
+        if (u.owner === target) sources.push(u.y * W + u.x)
       }
     }
   }

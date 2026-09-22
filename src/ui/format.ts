@@ -31,6 +31,7 @@ export const EVENT_TYPE_LABEL: Record<SimEvent['type'], string> = {
   build: '建設',
   starve: '飢餓',
   convert: '軍人化',
+  collapse: '孤立',
   extinct: '滅亡',
   victory: '勝利',
   milestone: '節目',
@@ -44,7 +45,7 @@ export const EVENT_CATEGORIES: { id: string; label: string; types: SimEvent['typ
   { id: 'civ', label: '文明', types: ['levelUp', 'milestone'] },
   { id: 'war', label: '総動員/軍人化', types: ['mobilize', 'demobilize', 'convert'] },
   { id: 'state', label: '国家', types: ['extinct', 'victory'] },
-  { id: 'starve', label: '飢餓', types: ['starve'] },
+  { id: 'starve', label: '飢餓', types: ['starve', 'collapse'] },
 ]
 
 export function categoryOf(type: SimEvent['type']): string {
@@ -90,6 +91,8 @@ export function formatEvent(ev: SimEvent, world: World): string {
         : `${a}の軍人 ${d.soldiers} 体が飢餓(食料不足)`
     case 'convert':
       return `${a}で ${d.count} 体が軍人化`
+    case 'collapse':
+      return `${a}は建物を全て失い、孤立して弱り始めた`
     case 'extinct':
       return `${a}が滅亡した`
     case 'victory':

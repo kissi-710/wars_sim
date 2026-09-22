@@ -171,6 +171,9 @@ function go(x: number, y: number): void {
         <span>{{ KIND_LABEL[k] }}</span>
         <b :class="{ warn: d.counts[k] >= buildingCap(d.c, k) }">{{ d.counts[k] }} / {{ buildingCap(d.c, k) }}</b>
       </div>
+      <div v-if="d.c.buildingCount === 0" class="note alert">
+        建物を 1 つも持っていません({{ d.c.noBuildingTurns }} ターン経過 / {{ CONFIG.collapse.graceTurns }} ターンで孤立崩壊が始まり、全ユニットが弱っていきます)
+      </div>
     </div>
 
     <div class="section">
